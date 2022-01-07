@@ -1,28 +1,3 @@
-/* Remove later */
-
-# variable "region" {
-#   type        = string
-#   default     = "ap-south-1"
-#   description = "Please set the region where the resouces to be created "
-# }
-
-# variable "access_key" {
-#   type = string
-# }
-# variable "secret_key" {
-#   type = string
-# }
-
-/* Remove later end */
-
-
-/*module specific variables */
-# variable "subnet_type" {
-#   type        = string
-#   description = "Type of the subnet: Public / Private"
-#   default     = "private"
-# }
-
 variable "prefix_name" {
   type        = string
   description = "Prefix to be added to the names of resources which are being provisioned"
