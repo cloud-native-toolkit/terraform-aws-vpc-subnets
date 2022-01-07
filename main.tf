@@ -18,7 +18,6 @@ locals {
   nat_gateway_count = 1
   gateway_id             = var.provision_igw  ? aws_internet_gateway.internet_gw[0].id : var.igw_id
 }
-
 #############################
 # Internet Gateway
 #############################
@@ -30,8 +29,8 @@ resource "aws_internet_gateway" "internet_gw" {
     {
       "Name" = format("${var.prefix_name}-%s-%s", var.vpc_id, "igw")
     }
-    #,
-    # var.tags
+    ,
+    var.tags
   )
 }
 
@@ -55,7 +54,7 @@ resource "aws_subnet" "public_subnet" {
       )
     },
     var.tags,
-     var.public_subnet_tags
+    var.public_subnet_tags
   )
 }
 ####################################
@@ -76,8 +75,8 @@ resource "aws_route_table" "public_rt" {
     {
       "Name" = format("${var.prefix_name}-%s", "public-rt")
     }
-    # ,
-    # var.tags
+    ,
+    var.tags
   )
 }
 
@@ -225,6 +224,9 @@ resource "aws_route" "private_nat_gw-route" {
 
 
 data "aws_subnets" "public_subnet_ids" {
+  depends_on = [
+    aws_subnet.public_subnet
+  ]
   filter {
     name   = "vpc-id"
     values = [var.vpc_id]
@@ -234,23 +236,18 @@ data "aws_subnets" "public_subnet_ids" {
   }
 }
 
-data "aws_subnet" "public_subnet_id" {
-  for_each = toset(data.aws_subnets.public_subnet_ids.ids)
-  id       = each.value
-}
-
-output "public_subnet_ids" {
- # value = tolist(data.aws_subnets.public_subnet_ids.ids)
- value = [for s in data.aws_subnet.public_subnet_id : {"id" = s.id,"cidr_block"=s.cidr_block, "availability_zone" =s.availability_zone}]
-  
-}
-
-output "public_subnet_cidrs" {
-  value = [for s in data.aws_subnet.public_subnet_id : s.cidr_block]
-}
-
+# data "aws_subnet" "public_subnet_id" {
+#   depends_on = [
+#     aws_subnet.public_subnet
+#   ]
+#   for_each = toset(data.aws_subnets.public_subnet_ids.ids)
+#   id       = each.value
+# }
 
 data "aws_subnets" "private_subnet_ids" {
+  depends_on = [
+    aws_subnet.private_subnet
+  ]
   filter {
     name   = "vpc-id"
     values = [var.vpc_id]
@@ -259,15 +256,12 @@ data "aws_subnets" "private_subnet_ids" {
     tier = "private"
   }
 }
-data "aws_subnet" "private_subnet_id" {
-  for_each = toset(data.aws_subnets.private_subnet_ids.ids)
-  id       = each.value
-}
 
-output "private_subnet_ids" {
-  value = [for s in data.aws_subnet.private_subnet_id : {"id" = s.id,"cidr_block"=s.cidr_block, "availability_zone" =s.availability_zone}]
-  }
+# data "aws_subnet" "private_subnet_id" {
+#   depends_on = [ 
+#     data.aws_subnets.private_subnet_ids
+#   ]
+#   for_each = toset(data.aws_subnets.private_subnet_ids.ids)
+#   id       = each.value
+# }
 
-output "private_subnet_cidrs" {
-  value = [for s in data.aws_subnet.private_subnet_id : s.cidr_block]
-}

@@ -1,17 +1,17 @@
 /* Remove later */
 
-variable "region" {
-  type        = string
-  default     = "ap-south-1"
-  description = "Please set the region where the resouces to be created "
-}
+# variable "region" {
+#   type        = string
+#   default     = "ap-south-1"
+#   description = "Please set the region where the resouces to be created "
+# }
 
-variable "access_key" {
-  type = string
-}
-variable "secret_key" {
-  type = string
-}
+# variable "access_key" {
+#   type = string
+# }
+# variable "secret_key" {
+#   type = string
+# }
 
 /* Remove later end */
 
@@ -37,7 +37,7 @@ variable "provision_igw" {
 
 variable "igw_id" {
   type        = string
-  description = "Id of the internet gateway associated with VPC."
+  description = "Id of the internet gateway alread associated with VPC."
   default     = ""
 }
 
@@ -151,7 +151,7 @@ variable "connectivity_type" {
 
 ### module specific 
 variable "provision_ngw" {
-  description = ""
+  description = "Flag to determise whether to provision NAT gateway. "
   type        = bool
   default     = true
 }
