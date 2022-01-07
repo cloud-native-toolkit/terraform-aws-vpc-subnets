@@ -1,14 +1,4 @@
-/* Steps to create AWS Subnet :
-  Input - VPC_ID
-  Default_network ACL id
-  prefix_name
-********
-
-*/
-
 locals {
-  #vpc_subnet_name        = var.name != "" ? var.name : "${var.prefix_name}-vpc-subnet"
-  
   num_of_public_sn_cidrs  = length(var.public_subnet_cidr)
   num_of_private_sn_cidrs = length(var.private_subnet_cidr)
   num_of_availability_zones = length(var.availability_zones)
@@ -68,12 +58,18 @@ resource "aws_subnet" "public_subnet" {
 resource "aws_route_table" "public_rt" {
   count = local.num_of_public_sn_cidrs > 0 ? 1 : 0
   vpc_id = var.vpc_id
+  
   tags = merge(
     {
-      "Name" = format("${var.prefix_name}-%s", "public-rt")
+      "Name" = format(
+        "${var.prefix_name}-%s-%s",
+        "public-route",
+        element(var.availability_zones, count.index),
+      )
     }
     ,
-    var.tags
+    var.tags,
+    # var.public_route_table_tags,
   )
 }
 
@@ -151,8 +147,8 @@ resource "aws_route_table" "private_rt" {
         element(var.availability_zones, count.index),
       )
     }
-    # ,
-    # var.tags,
+    ,
+    var.tags,
     # var.private_route_table_tags,
   )
 }
@@ -181,8 +177,8 @@ resource "aws_eip" "nat_gw_eip" {
         "nat-gw-public-eip",
       )
     }
-    # ,
-    # var.tags,
+    ,
+    var.tags,
     # var.nat_eip_tags,
   )
 }
@@ -201,8 +197,8 @@ resource "aws_nat_gateway" "nat_gw_public" {
         "nat-gw-pub",
       )
     }
-    # ,
-    # var.tags,
+    ,
+    var.tags,
     # var.nat_gateway_tags,
   )
   depends_on = [aws_internet_gateway.internet_gw]
