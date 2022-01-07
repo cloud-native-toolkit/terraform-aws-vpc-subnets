@@ -11,9 +11,6 @@ locals {
   
   num_of_public_sn_cidrs  = length(var.public_subnet_cidr)
   num_of_private_sn_cidrs = length(var.private_subnet_cidr)
-
-  # num_of_public_subnets = length(var.public_subnets)
-  # num_of_private_subnets = length(var.public_subnets)
   num_of_availability_zones = length(var.availability_zones)
   nat_gateway_count = 1
   gateway_id             = var.provision_igw  ? aws_internet_gateway.internet_gw[0].id : var.igw_id
@@ -92,7 +89,6 @@ resource "aws_route" "public_ig_route" {
   timeouts {
     create = "5m"
   }
-
 }
 
 resource "aws_route_table_association" "public_rt_assoc" {
