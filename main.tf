@@ -10,16 +10,23 @@ locals {
 #############################
 resource "aws_internet_gateway" "internet_gw" {
   count = var.provision_igw && ((length(var.public_subnets) > 0) || local.num_of_public_sn_cidrs > 0) ? 1 : 0
+
+  // if (want to provision igw) AND [ (existing subnets to be associated) or (create public_subnet)   ]
+  //then create numof  resource = 1
+  //else create numof  resource = 0
+
   vpc_id = var.vpc_id
 
   tags = merge(
     {
       "Name" = format("${var.prefix_name}-%s-%s", var.vpc_id, "igw")
+       
     }
     ,
     var.tags
   )
 }
+
 
 ##################################################
 # Public Subnet
