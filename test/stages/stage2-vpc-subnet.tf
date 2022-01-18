@@ -9,5 +9,8 @@ module "dev_vpc_subnet" {
   tags                            = var.tags
   public_subnet_tags              = var.public_subnet_tags
   private_subnet_tags             = var.private_subnet_tags
-
+  acl_rules_pub_in = var.acl_rules_pub_in
+  acl_rules_pub_out = var.acl_rules_pub_out
+  acl_rules_pri_in= var.acl_rules_pri_in
+  acl_rules_pri_out = var.acl_rules_pri_out
 }

@@ -81,3 +81,24 @@ variable "availability_zones" {
   type        = list(string)
   default     = [""]
 }
+
+variable "acl_rules_pub_in" {
+  type        = list(map(string))
+  default = []
+}
+
+variable "acl_rules_pub_out" {
+  type        = list(map(string))
+  default = []
+}
+
+variable "acl_rules_pri_in" {
+  description = "Private subnets inbound network ACLs"
+  type        = list(map(string))
+  default = []
+}
+
+variable "acl_rules_pri_out" {
+  type        = list(map(string))
+  default = []
+}
