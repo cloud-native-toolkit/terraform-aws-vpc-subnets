@@ -10,11 +10,6 @@ locals {
 #############################
 resource "aws_internet_gateway" "internet_gw" {
   count = var.provision_igw && ((length(var.public_subnets) > 0) || local.num_of_public_sn_cidrs > 0) ? 1 : 0
-
-  // if (want to provision igw) AND [ (existing subnets to be associated) or (create public_subnet)   ]
-  //then create numof  resource = 1
-  //else create numof  resource = 0
-
   vpc_id = var.vpc_id
 
   tags = merge(
@@ -54,8 +49,50 @@ resource "aws_subnet" "public_subnet" {
 ####################################
 # Add network ACL for each public subnet 
 # implement the logic by adding rules for each specific subnet
-#  ??????? steps below
 ####################################
+resource "aws_network_acl" "acl_pub" {
+  count = local.num_of_public_sn_cidrs > 0 ? 1 : 0
+  vpc_id     = var.vpc_id
+  subnet_ids = aws_subnet.public_subnet[*].id
+  tags = merge(
+    {
+      "Name" = format(
+        "${var.prefix_name}-%s",
+        "public-subnet-acl"
+      )
+    },
+    var.tags
+  )
+ 
+}
+
+resource "aws_network_acl_rule" "acl_pub_in" {
+  count = local.num_of_public_sn_cidrs > 0  ? length(var.acl_rules_pub_in) : 0
+
+  network_acl_id = aws_network_acl.acl_pub[0].id
+  rule_number    = var.acl_rules_pub_in[count.index]["rule_number"]
+  egress         = false
+  protocol       = var.acl_rules_pub_in[count.index]["protocol"]
+  rule_action    = var.acl_rules_pub_in[count.index]["rule_action"]
+  cidr_block     = var.acl_rules_pub_in[count.index]["cidr_block"]
+  from_port      = var.acl_rules_pub_in[count.index]["from_port"]
+  to_port        = var.acl_rules_pub_in[count.index]["to_port"]
+  
+}
+
+resource "aws_network_acl_rule" "acl_pub_out" {
+  count = local.num_of_public_sn_cidrs > 0  ? length(var.acl_rules_pub_out) : 0
+  network_acl_id = aws_network_acl.acl_pub[0].id
+  rule_number    = var.acl_rules_pub_out[count.index]["rule_number"]
+  egress         = true
+  protocol       = var.acl_rules_pub_out[count.index]["protocol"]
+  rule_action    = var.acl_rules_pub_out[count.index]["rule_action"]
+  cidr_block     = var.acl_rules_pub_out[count.index]["cidr_block"]
+  from_port      = var.acl_rules_pub_out[count.index]["from_port"]
+  to_port        = var.acl_rules_pub_out[count.index]["to_port"]
+  
+}
+
 
 ##################################################
 # Add Route table and Routes  for Public Subnet
@@ -138,6 +175,53 @@ resource "aws_subnet" "private_subnet" {
 #   value = data.aws_vpc.vpc
 # }
 
+####################################
+# Add network ACL for each private subnet 
+# implement the logic by adding rules for each specific subnet
+####################################
+resource "aws_network_acl" "acl_pri" {
+  count = local.num_of_private_sn_cidrs > 0 ? 1 : 0
+  vpc_id     = var.vpc_id
+  subnet_ids = aws_subnet.private_subnet[*].id
+  tags = merge(
+    {
+      "Name" = format(
+        "${var.prefix_name}-%s",
+        "private-subnet-acl"
+      )
+    },
+    var.tags
+  )
+ 
+}
+
+resource "aws_network_acl_rule" "acl_pri_in" {
+  count = local.num_of_private_sn_cidrs > 0  ? length(var.acl_rules_pri_in) : 0
+
+  network_acl_id = aws_network_acl.acl_pri[0].id
+  rule_number    = var.acl_rules_pri_in[count.index]["rule_number"]
+  egress         = false
+  protocol       = var.acl_rules_pri_in[count.index]["protocol"]
+  rule_action    = var.acl_rules_pri_in[count.index]["rule_action"]
+  cidr_block     = var.acl_rules_pri_in[count.index]["cidr_block"]
+  from_port      = var.acl_rules_pri_in[count.index]["from_port"]
+  to_port        = var.acl_rules_pri_in[count.index]["to_port"]
+  
+}
+
+resource "aws_network_acl_rule" "acl_pri_out" {
+  count = local.num_of_private_sn_cidrs > 0  ? length(var.acl_rules_pri_out) : 0
+  network_acl_id = aws_network_acl.acl_pri[0].id
+  rule_number    = var.acl_rules_pri_out[count.index]["rule_number"]
+  egress         = true
+  protocol       = var.acl_rules_pri_out[count.index]["protocol"]
+  rule_action    = var.acl_rules_pri_out[count.index]["rule_action"]
+  cidr_block     = var.acl_rules_pri_out[count.index]["cidr_block"]
+  from_port      = var.acl_rules_pri_out[count.index]["from_port"]
+  to_port        = var.acl_rules_pri_out[count.index]["to_port"]
+  
+}
+
 ####################################################
 # Private subnet Route table and Routes
 # 1. Create Private route table
@@ -185,8 +269,7 @@ resource "aws_eip" "nat_gw_eip" {
       )
     }
     ,
-    var.tags,
-    # var.nat_eip_tags,
+    var.tags
   )
 }
 
@@ -205,8 +288,7 @@ resource "aws_nat_gateway" "nat_gw_public" {
       )
     }
     ,
-    var.tags,
-    # var.nat_gateway_tags,
+    var.tags
   )
   depends_on = [aws_internet_gateway.internet_gw]
 }
