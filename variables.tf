@@ -39,7 +39,7 @@ variable "private_subnet_cidr" {
 variable "public_subnet_cidr" {
   type        = list(string)
   description = "(Required) The CIDR block for the public subnet."
-  default     = ["10.0.0.0/20"]
+  default     = []
 }
 variable "availability_zones" {
   description = "List of availability zone ids"
@@ -131,3 +131,23 @@ variable "provision_ngw" {
   default     = true
 }
 
+variable "acl_rules_pub_in" {
+  type        = list(map(string))
+  default = []
+}
+
+variable "acl_rules_pub_out" {
+  type        = list(map(string))
+  default = []
+}
+
+variable "acl_rules_pri_in" {
+  description = "Private subnets inbound network ACLs"
+  type        = list(map(string))
+  default = []
+}
+
+variable "acl_rules_pri_out" {
+  type        = list(map(string))
+  default = []
+}

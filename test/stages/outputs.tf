@@ -5,7 +5,6 @@ output "public_subnet_ids" {
   value = module.dev_vpc_subnet.public_subnet_ids
 
 }
-
 output "private_subnet_ids" {
   depends_on = [
     module.dev_vpc_subnet
