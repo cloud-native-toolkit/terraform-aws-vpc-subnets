@@ -6,7 +6,13 @@ variable "prefix_name" {
 
 variable "provision_igw" {
   type        = bool
-  description = "Provision Internet Gateway based if true."
+  description = "Provision Internet Gateway  if true."
+  default     = true
+}
+
+variable "provision" {
+  type        = bool
+  description = "Provision Subnet if  true."
   default     = true
 }
 
@@ -107,6 +113,12 @@ variable "private_subnets" {
   type        = list(string)
   default     = []
 }
+
+# variable "subnet_ids" {
+#   description = "List of Private subnets in VPC"
+#   type        = list(string)
+#   default     = []
+# }
 
 ### For NAT gateway ####################################
 # subnet_id - (Required)
