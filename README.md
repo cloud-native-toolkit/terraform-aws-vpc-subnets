@@ -1,4 +1,4 @@
-# AWS Cloud VPC module
+# AWS Cloud VPC Subnet module
 
 Provisions public and private subnet for VPC. The full list of resources provisioned is as follows:
 
@@ -28,6 +28,7 @@ The module depends on the following software components:
 ### Module dependencies
 
 This module makes use of the output from other modules:
+  - terraform_aws_vpc module https://github.com/cloud-native-toolkit/terraform-aws-vpc
 
 ### Example usage
 
@@ -52,6 +53,10 @@ provider "aws" {
 module "dev_vpc_subnet" {
   source                          = "github.com/cloud-native-toolkit/terraform-aws-vpc-subnets"
   vpc_id                          = module.dev_vpc.vpc_id
+  provision=var.provision
+  provision_igw = var.provision
+  provision_ngw = var.provision
+  prefix_name = var.prefix_name
   private_subnet_cidr             = var.private_subnet_cidr
   public_subnet_cidr              = var.public_subnet_cidr
   availability_zones              = var.availability_zones
@@ -60,10 +65,10 @@ module "dev_vpc_subnet" {
   tags                            = var.tags
   public_subnet_tags              = var.public_subnet_tags
   private_subnet_tags             = var.private_subnet_tags
-  acl_rules_pub_in                = var.acl_rules_pub_in
-  acl_rules_pub_out               = var.acl_rules_pub_out
-  acl_rules_pri_in                = var.acl_rules_pri_in
-  acl_rules_pri_out               = var.acl_rules_pri_out
+  acl_rules_pub_in = var.acl_rules_pub_in
+  acl_rules_pub_out = var.acl_rules_pub_out
+  acl_rules_pri_in= var.acl_rules_pri_in
+  acl_rules_pri_out = var.acl_rules_pri_out
 }
 
 ```
