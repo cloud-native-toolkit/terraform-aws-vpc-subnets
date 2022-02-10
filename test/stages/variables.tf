@@ -51,6 +51,11 @@ variable "public_subnet_cidr" {
   default     = ["10.0.0.0/20"]
 }
 
+variable "subnet_count" {
+  type        = number
+  description = "Numbers of subnets to provision"
+  default     = 0
+}
 
 variable "tags" {
   type = map(string)

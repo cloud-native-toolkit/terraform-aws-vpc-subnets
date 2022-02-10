@@ -1,6 +1,10 @@
 module "dev_vpc_subnet" {
   source                          = "./module"
   vpc_id                          = module.dev_vpc.vpc_id
+  provision=var.provision
+  provision_igw = var.provision
+  provision_ngw = var.provision
+  prefix_name = var.prefix_name
   private_subnet_cidr             = var.private_subnet_cidr
   public_subnet_cidr              = var.public_subnet_cidr
   availability_zones              = var.availability_zones

@@ -1,6 +1,5 @@
 output "vpc_id" {
-  description = "Description of my output"
-  value       = "value"
+  value  = var.vpc_id
 }
 output "public_subnet_ids" {
    value = data.aws_subnets.public_subnet_ids.ids  
@@ -9,6 +8,13 @@ output "public_subnet_ids" {
 output "private_subnet_ids" {
   value = data.aws_subnets.private_subnet_ids.ids
 }
+
+
+output "subnet_ids" {
+  value = data.aws_subnets.subnet_ids.ids
+}
+
+
 
 output "subnet_count_public" {
 value = local.num_of_public_sn_cidrs

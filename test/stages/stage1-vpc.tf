@@ -6,9 +6,8 @@ module "dev_vpc" {
   prefix_name      = var.prefix_name
   internal_cidr    = var.internal_cidr
   instance_tenancy = var.instance_tenancy
-
   /*
   To retrieve details of existing VPC, set provision flag to false and provide vpc_id
   */
-  #vpc_id=var.vpc_id
+  vpc_id=var.vpc_id
 }

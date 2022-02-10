@@ -9,7 +9,22 @@ versions:
   providers:
    - name: aws
      source: "hashicorp/aws"
-  dependencies: []  
+  dependencies:
+    - id: aws-vpc
+      refs:
+        - source: github.com/cloud-native-toolkit/terraform-aws-vpc
+          version: ">= 1.0.0"
   variables:
     - name: region
       scope: global
+    - name:  prefix_name
+      scope: global
+    - name: provision      
+      scope: global
+    - name: private_subnet_cidr
+      scope: global
+    - name: public_subnet_cidr  
+      scope: global
+    - name: availability_zones        
+      scope: global
+      
