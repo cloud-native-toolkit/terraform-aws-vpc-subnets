@@ -19,7 +19,7 @@ module "dev_vpc_subnet" {
   acl_rules_pri_out = var.acl_rules_pri_out
 }
 
-module "dev_vpc_subnet" {
+module "dev_vpc_subnet2" {
   source                          = "./module"
   vpc_id                          = module.dev_vpc.vpc_id
   provision=var.provision
