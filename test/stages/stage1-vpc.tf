@@ -7,5 +7,6 @@ module "dev_vpc" {
   internal_cidr    = var.internal_cidr
   instance_tenancy = var.instance_tenancy
   resource_group_name = var.resource_group_name
+  ##test comment
   
 }
