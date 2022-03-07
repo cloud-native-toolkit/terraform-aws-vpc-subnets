@@ -5,7 +5,12 @@ output "vpc_id" {
   value = module.dev_vpc.vpc_id
 
 }
-
+output "vpc_name" {
+  depends_on = [
+    module.dev_vpc
+  ]
+  value = module.dev_vpc.vpc_name
+}
 output "public_subnet_ids" {
   depends_on = [
     module.dev_vpc_subnet
