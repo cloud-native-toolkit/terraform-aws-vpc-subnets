@@ -21,8 +21,6 @@ output "private_subnet_ids" {
 }
 
 output "subnet_ids" {
-  # depends_on = [
-  #   module.dev_vpc_subnet
-  # ]
+ 
   value = module.dev_vpc_subnet.subnet_ids
 }
