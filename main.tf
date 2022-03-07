@@ -13,7 +13,7 @@ resource "aws_internet_gateway" "internet_gw" {
   count = var.provision_igw  ? 1 : 0
   vpc_id = var.vpc_id
   tags = merge(
-    {"Name" = format("${var.prefix_name}-%s-%s", var.vpc_id, "igw")}
+    {"Name" = format("${var.name_prefix}-%s-%s", var.vpc_id, "igw")}
     ,var.tags)
 }
 
@@ -29,7 +29,7 @@ resource "aws_subnet" "public_subnet" {
   tags = merge(
     {
       "Name" = format(
-        "${var.prefix_name}-%s-%s",
+        "${var.name_prefix}-%s-%s",
         "public-subnet",
         element(var.availability_zones, count.index)
       )
@@ -48,7 +48,7 @@ resource "aws_network_acl" "acl_pub" {
   tags = merge(
     {
       "Name" = format(
-        "${var.prefix_name}-%s",
+        "${var.name_prefix}-%s",
         "public-subnet-acl"
       )
     },
@@ -96,7 +96,7 @@ resource "aws_route_table" "public_rt" {
   tags = merge(
     {
       "Name" = format(
-        "${var.prefix_name}-%s-%s",
+        "${var.name_prefix}-%s-%s",
         "public-route",
         element(var.availability_zones, count.index),
       )
@@ -141,7 +141,7 @@ resource "aws_subnet" "private_subnet" {
   tags = merge(
     {
       "Name" = format(
-        "${var.prefix_name}-%s-%s",
+        "${var.name_prefix}-%s-%s",
         "private-subnet",
         element(var.availability_zones, count.index)
       )
@@ -172,7 +172,7 @@ resource "aws_network_acl" "acl_pri" {
   tags = merge(
     {
       "Name" = format(
-        "${var.prefix_name}-%s",
+        "${var.name_prefix}-%s",
         "private-subnet-acl"
       )
     },
@@ -219,7 +219,7 @@ resource "aws_route_table" "private_rt" {
   tags = merge(
     {
       "Name" = format(
-        "${var.prefix_name}-%s-%s",
+        "${var.name_prefix}-%s-%s",
         "private-route",
         element(var.availability_zones, count.index),
       )
@@ -250,7 +250,7 @@ resource "aws_eip" "nat_gw_eip" {
     {
       "Name" = format(
         "%s-%s",
-        var.prefix_name,
+        var.name_prefix,
         "nat-gw-public-eip",
       )
     }
@@ -269,7 +269,7 @@ resource "aws_nat_gateway" "nat_gw_public" {
     {
       "Name" = format(
         "%s-%s",
-        var.prefix_name,
+        var.name_prefix,
         "nat-gw-pub",
       )
     }
