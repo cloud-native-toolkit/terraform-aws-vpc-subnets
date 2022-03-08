@@ -11,11 +11,18 @@ variable "secret_key" {
   type = string
 }
 
-variable "prefix_name" {
+# variable "prefix_name" {
+#   type        = string
+#   description = "Prefix to be added to the names of resources which are being provisioned"
+#   default     = "swe"
+# }
+
+variable "name_prefix" {
   type        = string
   description = "Prefix to be added to the names of resources which are being provisioned"
   default     = "swe"
 }
+
 variable "instance_tenancy" {
   type        = string
   description = "Instance is shared / dedicated, etc. #[default, dedicated, host]"
@@ -106,4 +113,16 @@ variable "acl_rules_pri_in" {
 variable "acl_rules_pri_out" {
   type        = list(map(string))
   default = []
+}
+
+variable "cloud_provider" {
+  type = string
+  default = "aws"
+  
+}
+
+variable "resource_group_name" {
+  type        = string
+  description = "Existing resource group where the IKS cluster will be provisioned."
+  default     = "default"
 }

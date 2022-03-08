@@ -1,13 +1,13 @@
 #!/bin/bash
 SCRIPT_DIR=$(cd $(dirname "$0"); pwd -P)
 echo "SCRIPT_DIR: ${SCRIPT_DIR}"
-PREFIX_NAME=$(cat terraform.tfvars | grep prefix_name | sed "s/prefix_name=//g" | sed 's/"//g' | sed "s/_/-/g")
 REGION=$(cat terraform.tfvars | grep -E "^region" | sed "s/region=//g" | sed 's/"//g')
-VPC_NAME="${PREFIX_NAME}-vpc"
-
-echo "VPC_NAME: ${VPC_NAME}"
 echo "REGION: ${REGION}"
 
+#PREFIX_NAME=$(cat terraform.tfvars | grep name_prefix | sed "s/name_prefix=//g" | sed 's/"//g' | sed "s/_/-/g")
+#VPC_NAME="${PREFIX_NAME}-vpc"
+export VPC_NAME=$(terraform output -json | jq -r '."vpc_name".value')
+echo "VPC_NAME: ${VPC_NAME}"
 
 num_of_public_subnets=$(cat terraform.tfvars | grep -E "^num_of_public_subnets" | sed "s/num_of_public_subnets=//g" | sed 's/"//g')
 num_of_private_subnets=$(cat terraform.tfvars | grep num_of_private_subnets | sed "s/num_of_private_subnets=//g" | sed 's/"//g' | sed "s/_/-/g")
@@ -22,7 +22,7 @@ aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
 echo "Checking VPC exists with Name in AWS: ${VPC_NAME}"
 
 VPC_ID=""
-VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=swe-vpc"  --query 'Vpcs[0].VpcId' --output=json --no-paginate)
+VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${VPC_NAME}"  --query 'Vpcs[0].VpcId' --output=json --no-paginate)
 
 echo "VPC_ID: ${VPC_ID}"
 if [[(${VPC_ID} == "") ]]; then

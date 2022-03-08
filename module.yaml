@@ -15,16 +15,20 @@ versions:
         - source: github.com/cloud-native-toolkit/terraform-aws-vpc
           version: ">= 1.0.0"
   variables:
+    - name: vpc_name
+      moduleRef:
+        id: aws-vpc
+        output: vpc_name
     - name: region
       scope: global
-    - name:  prefix_name
-      scope: global
+    - name:  name_prefix
+      scope: module
     - name: provision      
-      scope: global
+      scope: module
     - name: private_subnet_cidr
-      scope: global
+      scope: module
     - name: public_subnet_cidr  
-      scope: global
+      scope: module
     - name: availability_zones        
-      scope: global
+      scope: module
       

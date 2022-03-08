@@ -4,7 +4,7 @@ module "dev_vpc_subnet" {
   provision=var.provision
   provision_igw = var.provision
   provision_ngw = var.provision
-  prefix_name = var.prefix_name
+  name_prefix = var.name_prefix
   private_subnet_cidr             = var.private_subnet_cidr
   public_subnet_cidr              = var.public_subnet_cidr
   availability_zones              = var.availability_zones

@@ -1,4 +1,10 @@
-variable "prefix_name" {
+# variable "prefix_name" {
+#   type        = string
+#   description = "Prefix to be added to the names of resources which are being provisioned"
+#   default     = "swe"
+# }
+
+variable "name_prefix" {
   type        = string
   description = "Prefix to be added to the names of resources which are being provisioned"
   default     = "swe"
@@ -22,19 +28,11 @@ variable "igw_id" {
   default     = ""
 }
 
-
-/* Resource level variables */
 variable "vpc_id" {
   type        = string
   description = "(Required) The VPC ID."
   default     = ""
 }
-
-# variable "cidr_block" {
-#   type        = string
-#   description = "(Required) The CIDR block for the subnet."
-#   default     = "10.0.0.0/16"
-# }
 
 variable "private_subnet_cidr" {
   type        = list(string)
@@ -52,13 +50,6 @@ variable "availability_zones" {
   type        = list(string)
   default     = [""]
 }
-
-# variable "availability_zone_id" {  
-#   type        = string
-#   description = " (Optional) The AZ ID of the subnet."
-
-# }
-
 
 variable "customer_owned_ipv4_pool" {
   type        = string
@@ -113,12 +104,6 @@ variable "private_subnets" {
   type        = list(string)
   default     = []
 }
-
-# variable "subnet_ids" {
-#   description = "List of Private subnets in VPC"
-#   type        = list(string)
-#   default     = []
-# }
 
 ### For NAT gateway ####################################
 # subnet_id - (Required)
