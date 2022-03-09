@@ -10,7 +10,11 @@ export VPC_NAME=$(terraform output -json | jq -r '."vpc_name".value')
 echo "VPC_NAME: ${VPC_NAME}"
 
 num_of_public_subnets=$(cat terraform.tfvars | grep -E "^num_of_public_subnets" | sed "s/num_of_public_subnets=//g" | sed 's/"//g')
-num_of_private_subnets=$(cat terraform.tfvars | grep num_of_private_subnets | sed "s/num_of_private_subnets=//g" | sed 's/"//g' | sed "s/_/-/g")
+num_of_private_subnets=$(cat terraform.tfvars | grep  -E "^num_of_private_subnets" | sed "s/num_of_private_subnets=//g" | sed 's/"//g')
+
+# num_of_public_subnets   =$(cat terraform.tfvars | grep -E "^num_of_public_subnets"| sed "s/num_of_public_subnets=//g"| sed 's/"//g')
+# num_of_private_subnets  =$(cat terraform.tfvars | grep -E "^num_of_private_subnets"     | sed "s/num_of_private_subnets=//g"    | sed 's/"//g')
+
 
 echo "Number of Public subnets  : ${num_of_public_subnets}"
 echo "Number of Private subnets : ${num_of_private_subnets}"
@@ -33,29 +37,40 @@ else
 fi
 
 
-no_of_pub_subnets=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" "Name=tag:tier,Values=public" --query 'length(Subnets)' --output=text --no-paginate)
+no_of_pubsubs_created=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" "Name=tag:tier,Values=public" --query 'length(Subnets)' --output=text --no-paginate)
 
-# echo "Number of pub subnets created the VPC ID ${VPC_ID} is ${no_of_pub_subnets}"
+# echo "Number of pub subnets created the VPC ID ${VPC_ID} is ${no_of_pubsubs_created}"
 
-no_of_pri_subnets=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" "Name=tag:tier,Values=private" --query 'length(Subnets)' --output=text --no-paginate)
+no_of_prisubs_created=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" "Name=tag:tier,Values=private" --query 'length(Subnets)' --output=text --no-paginate)
 
-# echo "Number of private subnets created the VPC ID ${VPC_ID} is ${no_of_pri_subnets}"
+# echo "Number of private subnets created the VPC ID ${VPC_ID} is ${no_of_prisubs_created}"
 
 subnets_created=true
-if [[(${num_of_public_subnets} > 0) && (${num_of_public_subnets} == ${no_of_pub_subnets})]];then
-    echo "No. of Publics Subnets created:  ${no_of_pub_subnets} "
-else 
-    echo "No Public Subnets created "
-    subnets_created=false
-    exit 1
+if [[(${num_of_public_subnets} > 0)]]; then
+    if [[ (${num_of_public_subnets} == ${no_of_pubsubs_created})]];then
+        echo "No. of Publics Subnets created:  ${no_of_pubsubs_created} "
+    else     
+        echo "No Public Subnets created "       
+        subnets_created=false
+    fi
+
 fi
 
-if [[(${num_of_private_subnets} > 0 )&&(${num_of_private_subnets} == ${no_of_pri_subnets})]]; then
-    echo "No. of privates Subnets created:  ${no_of_pri_subnets} "    
-else 
-    echo "No Private Subnets created "
-    exit 1
+if [[(${num_of_private_subnets} > 0 )]]; then
+    if [[ (${num_of_private_subnets} == ${no_of_prisubs_created})]]; then
+        echo "No. of privates Subnets created:  ${no_of_prisubs_created} "    
+    else 
+        echo "No Private Subnets created "
+        subnets_created=false
+    fi 
 fi
 
-echo "All Good" 
-exit 0
+if [[ ${subnets_created} == true ]]; then
+    echo "All Good" 
+    exit 0
+else 
+    echo "Required Subnets are not created"  
+    echo "Num of Public Subnets Requested: ${num_of_public_subnets}, Created:  ${no_of_pubsubs_created}"  
+    echo "Num of Private Subnets Requested: ${num_of_private_subnets}, Created:  ${no_of_prisubs_created}"  
+fi
+exit 1    

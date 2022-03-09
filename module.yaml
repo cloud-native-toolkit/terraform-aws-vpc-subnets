@@ -14,21 +14,16 @@ versions:
       refs:
         - source: github.com/cloud-native-toolkit/terraform-aws-vpc
           version: ">= 1.0.0"
+    - id: aws-internet-gateway
+      refs:
+        - source: github.com/cloud-native-toolkit/terraform-aws-vpc-gateways
+          version: ">= 1.0.0"          
   variables:
     - name: vpc_name
       moduleRef:
         id: aws-vpc
         output: vpc_name
-    - name: region
-      scope: global
-    - name:  name_prefix
-      scope: module
-    - name: provision      
-      scope: module
-    - name: private_subnet_cidr
-      scope: module
-    - name: public_subnet_cidr  
-      scope: module
-    - name: availability_zones        
-      scope: module
-      
+    # - name: gateways
+    #   moduleRef:
+    #     id: aws-internet-gateway
+    #     output: [igw_id]

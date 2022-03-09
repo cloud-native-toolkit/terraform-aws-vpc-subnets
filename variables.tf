@@ -1,8 +1,14 @@
-# variable "prefix_name" {
-#   type        = string
-#   description = "Prefix to be added to the names of resources which are being provisioned"
-#   default     = "swe"
-# }
+variable "provision" {
+  type        = bool
+  description = "Provision Subnet if  true."
+  default     = true
+}
+
+variable "resource_group_name" {
+  type        = string
+  description = "The name of the resource group where the VPC is deployed. On AWS this value becomes a tag."
+  default     = "default"
+}
 
 variable "name_prefix" {
   type        = string
@@ -10,45 +16,34 @@ variable "name_prefix" {
   default     = "swe"
 }
 
-variable "provision_igw" {
-  type        = bool
-  description = "Provision Internet Gateway  if true."
-  default     = true
-}
-
-variable "provision" {
-  type        = bool
-  description = "Provision Subnet if  true."
-  default     = true
-}
-
-variable "igw_id" {
+variable "label" {
   type        = string
-  description = "Id of the internet gateway alread associated with VPC."
-  default     = ""
+  description = "label to define type of subnet"
+  default     = "private"
 }
 
-variable "vpc_id" {
-  type        = string
-  description = "(Required) The VPC ID."
-  default     = ""
-}
-
-variable "private_subnet_cidr" {
-  type        = list(string)
-  description = "(Required) The CIDR block for the private subnet."
-  default     = ["10.0.125.0/24"]
-}
-
-variable "public_subnet_cidr" {
-  type        = list(string)
-  description = "(Required) The CIDR block for the public subnet."
+variable "gateways" {
+  type = list(string)
+  description = "List of gateway ids and zones"
   default     = []
 }
+
+variable "vpc_name" {
+  type        = string
+  description = "(Required) The VPC name."
+  default     = ""
+}
+
+variable "subnet_cidrs" {
+  type        = list(string)
+  description = "(Required) The CIDR block for the  subnet."
+  default     = []
+}
+
 variable "availability_zones" {
   description = "List of availability zone ids"
   type        = list(string)
-  default     = [""]
+  default     = []
 }
 
 variable "customer_owned_ipv4_pool" {
@@ -69,82 +64,32 @@ variable "map_public_ip_on_launch" {
   default     = false
 }
 
-variable "tags" {
-  type        = map(string)
-  default     = {
-    project = "swe"
-  }
-  description = "(Optional) A map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
-}
 
-variable "public_subnet_tags" {
-  description = "Tags for public subnets"
-  type        = map(string)
-  default     = {
-    tier = "public"
-  }
-}
+# variable "public_subnets" {
+#   description = "List of Public subnets in VPC"
+#   type        = list(string)
+#   default     = []
+# }
 
-variable "private_subnet_tags" {
-  description = "Tags for private subnets"
-  type        = map(string)
-  default     = {
-    tier = "private"
-  }
-}
+# variable "private_subnets" {
+#   description = "List of Private subnets in VPC"
+#   type        = list(string)
+#   default     = []
+# }
 
-variable "public_subnets" {
-  description = "List of Public subnets in VPC"
-  type        = list(string)
-  default     = []
-}
-
-variable "private_subnets" {
-  description = "List of Private subnets in VPC"
-  type        = list(string)
-  default     = []
-}
-
-### For NAT gateway ####################################
-# subnet_id - (Required)
-# allocation_id, connectivity_type, tags - Optional
-########################################################
 variable "allocation_id" {
-  description = "(Optional) The Allocation ID of the Elastic IP address for the gateway. Required for connectivity_type of public."
+  description = " For NAT Gateway. Required if connectivity_type is public."
   type        = string
-  default     = ""
+  default     = "" 
 }
 
 variable "connectivity_type" {
-  description = "(Optional) Connectivity type for the gateway. Valid values are private and public. Defaults to public."
+  description = "For NAT Gateway. Valid values are private and public. Defaults to public."
   type        = string
   default     = "public"
 }
 
-### module specific 
-variable "provision_ngw" {
-  description = "Flag to determise whether to provision NAT gateway. "
-  type        = bool
-  default     = true
-}
-
-variable "acl_rules_pub_in" {
-  type        = list(map(string))
-  default = []
-}
-
-variable "acl_rules_pub_out" {
-  type        = list(map(string))
-  default = []
-}
-
-variable "acl_rules_pri_in" {
-  description = "Private subnets inbound network ACLs"
-  type        = list(map(string))
-  default = []
-}
-
-variable "acl_rules_pri_out" {
+variable "acl_rules" {
   type        = list(map(string))
   default = []
 }
