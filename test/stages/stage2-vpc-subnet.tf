@@ -30,21 +30,21 @@ module "dev_pub_subnet" {
 #     #subnet_ids= var.subnet_ids    
 # }
 
-# module "dev_priv_subnet" {
-#   source = "./module"
+module "dev_priv_subnet" {
+  source = "./module"
 
-#   provision=var.provision
-#   name_prefix = var.name_prefix
+  provision=var.provision
+  name_prefix = var.name_prefix
 
-#   label = "private"
-#   vpc_name = module.dev_vpc.vpc_name
-#   #subnet_cidrs = ["10.0.128.0/20","10.0.144.0/20"]
-#   #availability_zones = ["ap-south-1a","ap-south-1b"]
-#   subnet_cidrs = var.priv_subnet_cidrs
-#   availability_zones = var.availability_zones
-#   map_customer_owned_ip_on_launch = false
-#   map_public_ip_on_launch         = false
-#   acl_rules = var.acl_rules_pri
-#   gateways = module.dev_ngw.ngw_id  
+  label = "private"
+  vpc_name = module.dev_vpc.vpc_name
+  #subnet_cidrs = ["10.0.128.0/20","10.0.144.0/20"]
+  #availability_zones = ["ap-south-1a","ap-south-1b"]
+  subnet_cidrs = var.priv_subnet_cidrs
+  availability_zones = var.availability_zones
+  map_customer_owned_ip_on_launch = false
+  map_public_ip_on_launch         = false
+  acl_rules = var.acl_rules_pri
+  #gateways = module.dev_ngw.ngw_id  
   
-# }
+}
