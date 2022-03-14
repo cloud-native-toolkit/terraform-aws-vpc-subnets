@@ -32,7 +32,10 @@ module "dev_pub_subnet" {
 
 module "dev_priv_subnet" {
   source = "./module"
-
+  depends_on = [
+      module.dev_vpc,
+      module.dev_igw
+  ]
   provision=var.provision
   name_prefix = var.name_prefix
 
