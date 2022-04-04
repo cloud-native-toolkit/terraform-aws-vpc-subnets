@@ -14,16 +14,20 @@ versions:
       refs:
         - source: github.com/cloud-native-toolkit/terraform-aws-vpc
           version: ">= 1.0.0"
-    - id: aws-internet-gateway
-      refs:
+    - id: gateways
+      refs: 
         - source: github.com/cloud-native-toolkit/terraform-aws-vpc-gateways
           version: ">= 1.0.0"          
+        - source: github.com/cloud-native-toolkit/terraform-aws-nat-gateways
+          version: ">= 1.0.0"          
+      optional: true
+      manualResolution: true  #need to be taken care in BOM
   variables:
     - name: vpc_name
       moduleRef:
         id: aws-vpc
         output: vpc_name
-    # - name: gateways
-    #   moduleRef:
-    #     id: aws-internet-gateway
-    #     output: [igw_id]
+    - name: gateways
+      moduleRef:
+        id: gateways
+        output: ids
