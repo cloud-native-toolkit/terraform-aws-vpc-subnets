@@ -16,7 +16,7 @@ output "public_subnet_ids" {
   depends_on = [
     module.dev_pub_subnet
   ]
-  value = module.dev_pub_subnet.subnet_ids
+  value = module.dev_pub_subnet.ids
 
 }
 
@@ -25,7 +25,7 @@ output "private_subnet_ids" {
   depends_on = [
     module.dev_priv_subnet
   ]
-  value = module.dev_priv_subnet.subnet_ids
+  value = module.dev_priv_subnet.ids
 }
 
 
