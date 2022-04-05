@@ -126,18 +126,18 @@ resource "aws_route" "private_ngw-route" {
 
 
 
-data "aws_subnets" "subnet_ids" {
-  depends_on = [
-    aws_subnet.subnet,    
-  ]
-  filter {
-    name   = "vpc-id"
-    values = [local.vpc_id]
-  } 
-  tags = {
-    tier =  "${var.label}"
-    ResourceGroup = local.resource_group_name
-  }  
-}
+# data "aws_subnets" "subnet_ids" {
+#   depends_on = [
+#     aws_subnet.subnet,    
+#   ]
+#   filter {
+#     name   = "vpc-id"
+#     values = [local.vpc_id]
+#   } 
+#   tags = {
+#     tier =  "${var.label}"
+#     ResourceGroup = local.resource_group_name
+#   }  
+# }
 
 

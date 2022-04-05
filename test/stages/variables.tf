@@ -82,8 +82,8 @@ variable "gateways" {
   description = "List of gateway ids and zones"
   default     = []
 }
-variable "connectivity_type" {
-  type        = string
-  description = "(Optional) Connectivity type for the gateway. Valid values are private and public. Defaults to public."
-  default     = "public"    
-}
+# variable "connectivity_type" {
+#   type        = string
+#   description = "(Optional) Connectivity type for the gateway. Valid values are private and public. Defaults to public."
+#   default     = "public"    
+# }
