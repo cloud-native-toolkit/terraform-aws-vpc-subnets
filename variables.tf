@@ -65,30 +65,6 @@ variable "map_public_ip_on_launch" {
 }
 
 
-# variable "public_subnets" {
-#   description = "List of Public subnets in VPC"
-#   type        = list(string)
-#   default     = []
-# }
-
-# variable "private_subnets" {
-#   description = "List of Private subnets in VPC"
-#   type        = list(string)
-#   default     = []
-# }
-
-variable "allocation_id" {
-  description = " For NAT Gateway. Required if connectivity_type is public."
-  type        = string
-  default     = "" 
-}
-
-variable "connectivity_type" {
-  description = "For NAT Gateway. Valid values are private and public. Defaults to public."
-  type        = string
-  default     = "public"
-}
-
 variable "acl_rules" {
   type        = list(map(string))
   default = []

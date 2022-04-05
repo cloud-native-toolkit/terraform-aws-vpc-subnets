@@ -3,7 +3,8 @@ output "vpc_id" {
 }
 
 output "subnet_ids" {
-  value = data.aws_subnets.subnet_ids.ids
+  #value = data.aws_subnets.subnet_ids.ids
+  value= aws_subnet.subnet.*.id
 }
 
 output "ids" {
