@@ -5,6 +5,29 @@ locals {
   num_of_availability_zones = length(var.availability_zones)
   gateway_count      = length(var.gateways)
   vpc_id = var.provision ? data.aws_vpc.vpc[0].id : null
+
+  default_acl_rules = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      egress = false      
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+    {
+      rule_number = 100
+      rule_action = "allow"
+      egress = true
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+] 
+
+acl_rules =  length(var.acl_rules) > 0 ? var.acl_rules : local.default_acl_rules
 }
 
 resource null_resource print_names {
@@ -61,15 +84,16 @@ resource "aws_network_acl" "subnet_acl" {
 }
 
 resource "aws_network_acl_rule" "subnet_acl" {
-  count = (var.provision && local.num_of_sn_cidrs > 0)  ? length(var.acl_rules) : 0
+  #count = (var.provision && local.num_of_sn_cidrs > 0)  ? length(var.acl_rules) : 0
+  count = (var.provision && local.num_of_sn_cidrs > 0)  ? length(local.acl_rules) : 0
   network_acl_id = aws_network_acl.subnet_acl[0].id
-  rule_number    = var.acl_rules[count.index]["rule_number"]
-  egress = var.acl_rules[count.index]["egress"]
-  protocol       = var.acl_rules[count.index]["protocol"]
-  rule_action    = var.acl_rules[count.index]["rule_action"]
-  cidr_block     = var.acl_rules[count.index]["cidr_block"]
-  from_port      = var.acl_rules[count.index]["from_port"]
-  to_port        = var.acl_rules[count.index]["to_port"]
+  rule_number    = local.acl_rules[count.index]["rule_number"]
+  egress = local.acl_rules[count.index]["egress"]
+  protocol       = local.acl_rules[count.index]["protocol"]
+  rule_action    = local.acl_rules[count.index]["rule_action"]
+  cidr_block     = local.acl_rules[count.index]["cidr_block"]
+  from_port      = local.acl_rules[count.index]["from_port"]
+  to_port        = local.acl_rules[count.index]["to_port"]
   
 }
 
