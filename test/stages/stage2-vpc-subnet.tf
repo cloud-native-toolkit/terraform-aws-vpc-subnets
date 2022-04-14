@@ -12,7 +12,7 @@ module "dev_pub_subnet" {
   gateways = [module.dev_igw.igw_id]
   map_customer_owned_ip_on_launch = false
   map_public_ip_on_launch         = false
-  acl_rules = var.acl_rules_pub
+  #acl_rules = var.acl_rules_pub
 }
 
 # module "dev_ngw" {
@@ -47,7 +47,7 @@ module "dev_priv_subnet" {
   availability_zones = var.availability_zones
   map_customer_owned_ip_on_launch = false
   map_public_ip_on_launch         = false
-  acl_rules = var.acl_rules_pri
+  #acl_rules = var.acl_rules_pri
   #gateways = module.dev_ngw.ngw_id  
   
 }
