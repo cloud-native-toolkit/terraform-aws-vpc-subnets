@@ -3,6 +3,17 @@ variable "provision" {
   description = "Provision Subnet if  true."
   default     = true
 }
+variable "region" {
+  type        = string
+  default     = "ap-south-1"
+  description = "Please set the region where the resouces to be created "
+}
+
+variable "multi-zone" {
+  type = bool
+  default = true
+  description = "Create subnets in multiple zones"
+}
 
 variable "resource_group_name" {
   type        = string
