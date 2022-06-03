@@ -18,6 +18,7 @@ variable "provision" {
   description = "Flag indicating that the instance should be provisioned. If false then an existing instance will be looked up"
   default     = true
 }
+
 variable "resource_group_name" {
   type        = string
   description = "Existing resource group where the IKS cluster will be provisioned."
@@ -63,6 +64,13 @@ variable "priv_subnet_cidrs" {
   description = "The cidr range of the Private subnet."
   #default=["10.0.128.0/20"]
 }
+
+variable "multi-zone" {
+  type = bool
+  default = true
+  description = "Create subnets in multiple zones"
+}
+
 variable "availability_zones" {
   description = "List of availability zone ids"
   type        = list(string)

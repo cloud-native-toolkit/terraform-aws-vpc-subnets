@@ -2,9 +2,13 @@ locals {
 
   resource_group_name = var.resource_group_name != "" && var.resource_group_name != null ? var.resource_group_name : "default"
   num_of_sn_cidrs  = length(var.subnet_cidrs)
-  num_of_availability_zones = length(var.availability_zones)
+  
   gateway_count      = length(var.gateways)
   vpc_id = var.provision ? data.aws_vpc.vpc[0].id : null
+  az_names =["a","b","c"]
+  availability_zones =  length(var.availability_zones)>0 ? var.availability_zones: [ for index in range(local.num_of_sn_cidrs): "${var.region}${local.az_names[index]}" ]
+  num_of_availability_zones = var.multi-zone && length(var.availability_zones) >0 ? length(var.availability_zones) : (var.multi-zone ? local.num_of_sn_cidrs : 1) 
+
 
   default_acl_rules = [
     {
@@ -53,23 +57,28 @@ resource "aws_subnet" "subnet" {
   count = (var.provision && local.num_of_sn_cidrs > 0) ? local.num_of_sn_cidrs : 0
   vpc_id                  = local.vpc_id
   cidr_block              = element(var.subnet_cidrs, count.index)
-  availability_zone       = local.num_of_availability_zones > 0 ? element(var.availability_zones, count.index) : null
+  #availability_zone       = local.num_of_availability_zones > 0 ? element(var.availability_zones, count.index) : null
+  availability_zone       = local.num_of_availability_zones > 0 ? (var.multi-zone ? element(local.availability_zones, count.index):  element(local.availability_zones, 0)) : null
   map_public_ip_on_launch = var.map_public_ip_on_launch
 
   tags ={
       "Name" = format(
-        "${var.name_prefix}-%s-%s",
+        "${var.name_prefix}-%s-%s-%s",
         "${var.label}",
-        element(var.availability_zones, count.index)
+        #element(var.availability_zones, count.index)
+        #element(local.availability_zones, count.index)
+        local.num_of_availability_zones > 0 ? (var.multi-zone ? element(local.availability_zones, count.index):  element(local.availability_zones, 0)) : null,
+        count.index
       ),
       ResourceGroup = local.resource_group_name,
       tier =  "${var.label}"
     }  
 }
 
-# Add network ACL for each public subnet 
-# implement the logic by adding rules for each specific subnet
+
+#Creare ACL group for the subnets. All subnets passed as inputs attached to same ACL group
 resource "aws_network_acl" "subnet_acl" {
+  depends_on = [aws_subnet.subnet]
   count = (var.provision && local.num_of_sn_cidrs > 0) ? 1 : 0
   vpc_id     = local.vpc_id
   subnet_ids = aws_subnet.subnet[*].id
@@ -112,7 +121,8 @@ resource "aws_route_table" "subnet_rt" {
       "Name" = format(
         "${var.name_prefix}-%s-%s",
         "${var.label}-sn-rt",
-        element(var.availability_zones, count.index),
+        #element(var.availability_zones, count.index),
+        element(local.availability_zones, count.index),
       ),
       ResourceGroup = local.resource_group_name
     }  
